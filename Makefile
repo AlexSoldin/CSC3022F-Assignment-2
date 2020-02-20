@@ -1,11 +1,11 @@
-volimage: volimage.o
-	g++ -o volimage volimage.cpp --std=c++11
+driver: driver.o
+	g++ -o driver driver.cpp --std=c++11
 
-volimage.o: volimage.cpp
-	g++ -o volimage.o volimage.cpp --std=c++11
+driver.o: driver.cpp
+	g++ -o driver.o driver.cpp --std=c++11
 
 clean: 
-	@rm -f *.o volimage
+	@rm -f *.o driver
 
 #run: volimage
 #	./volimage <basefile> <operation> <indices> <output file>

@@ -23,3 +23,20 @@ SLDALE003::VolImage::~VolImage(){
         delete [] slices[slice];
     }
 }
+
+bool readImages(std::string baseName){
+
+}
+
+void diffmap(int sliceI, int sliceJ, std::string output_prefix){
+
+}
+
+void extract(int sliceId, std::string output_prefix){
+
+}
+
+int volImageSize(void){
+
+}
+
