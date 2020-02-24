@@ -16,27 +16,27 @@ SLDALE003::VolImage::VolImage(){
 }
 
 SLDALE003::VolImage::~VolImage(){
-    for(int slice = 0; slice < slices.size(); slice++){
-        for(int i = 0; i < height; i ++){
-            delete [] slices[slice][i];
-        }
-        delete [] slices[slice];
-    }
+    // for(int slice = 0; slice < slices.size(); slice++){
+    //     for(int i = 0; i < height; i ++){
+    //         delete [] slices[slice][i];
+    //     }
+    //     delete [] slices[slice];
+    // }
 }
 
-bool readImages(std::string baseName){
-
+bool readImages(string baseName){
+    cout << "Successfully called readImages" << endl;
 }
 
-void diffmap(int sliceI, int sliceJ, std::string output_prefix){
-
+void diffmap(int sliceI, int sliceJ, string output_prefix){
+    cout << "Successfully called diffmap" << endl;
 }
 
-void extract(int sliceId, std::string output_prefix){
-
+void extract(int sliceId, string output_prefix){
+    cout << "Successfully called extract" << endl;
 }
 
 int volImageSize(void){
-
+    cout << "Successfully called volImageSize" << endl;
 }
 
