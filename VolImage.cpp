@@ -16,27 +16,43 @@ SLDALE003::VolImage::VolImage(){
 }
 
 SLDALE003::VolImage::~VolImage(){
-    // for(int slice = 0; slice < slices.size(); slice++){
-    //     for(int i = 0; i < height; i ++){
-    //         delete [] slices[slice][i];
-    //     }
-    //     delete [] slices[slice];
-    // }
+    for(int slice = 0; slice < slices.size(); slice++){
+        for(int i = 0; i < height; i ++){
+            delete [] slices[slice][i];
+        }
+        delete [] slices[slice];
+    }
 }
 
-bool readImages(string baseName){
-    cout << "Successfully called readImages" << endl;
+bool SLDALE003::VolImage::readImages(std::string baseName){
+    string line;
+    ifstream file("./brain_mri_raws/" + baseName + "/MRI.data");
+    int width, height, numImages;
+    if (file.is_open()) {
+        getline(file, line);
+        vector<string> values;
+        string instance = 0;
+        while (std::cin >> instance){
+            values.push_back(instance);
+        }
+    
+        cout << "Width: " << values[0] << " Height: " << values[1] << " imgs " << values[2] << endl;
+        width = stoi(values[0]);
+        height = stoi(values[1]);
+        numImages = stoi(values[2]);
+    }
+    return true;
 }
 
-void diffmap(int sliceI, int sliceJ, string output_prefix){
-    cout << "Successfully called diffmap" << endl;
-}
+// void SLDALE003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_prefix){
+//     cout << "Successfully called diffmap";
+// }
 
-void extract(int sliceId, string output_prefix){
-    cout << "Successfully called extract" << endl;
-}
+// void SLDALE003::VolImage::extract(int sliceId, string output_prefix){
+//     cout << "Successfully called extract";
+// }
 
-int volImageSize(void){
-    cout << "Successfully called volImageSize" << endl;
+int SLDALE003::VolImage::volImageSize(void){
+    return 0;
 }
 
