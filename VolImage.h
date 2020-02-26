@@ -10,6 +10,7 @@
 #define _VOLIMAGE_CLASS_H
 
 namespace SLDALE003{
+
     class VolImage {
         private: // private members
             int width, height; // width and height of image stack

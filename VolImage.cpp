@@ -24,23 +24,22 @@ SLDALE003::VolImage::~VolImage(){
     }
 }
 
-bool SLDALE003::VolImage::readImages(std::string baseName){
-    string line;
-    ifstream file("./brain_mri_raws/" + baseName + "/MRI.data");
-    int width, height, numImages;
-    if (file.is_open()) {
-        getline(file, line);
-        vector<string> values;
-        string instance = 0;
-        while (std::cin >> instance){
-            values.push_back(instance);
-        }
-    
-        cout << "Width: " << values[0] << " Height: " << values[1] << " imgs " << values[2] << endl;
-        width = stoi(values[0]);
-        height = stoi(values[1]);
-        numImages = stoi(values[2]);
+bool SLDALE003::VolImage::readImages(string baseName){
+    ifstream file("./" + baseName + ".data");
+    vector<int> headerValues;
+    int instance = 0;
+    while(!file.eof()){
+        file >> instance >> ws;
+        headerValues.push_back(instance);
     }
+
+    width = headerValues[0];
+    height = headerValues[1];
+    int numImages = headerValues[2];
+    cout << "Width: " << to_string(width) << "\nHeight: " << to_string(height) << "\nNumImages: " << to_string(numImages) << endl;
+
+    
+
     return true;
 }
 

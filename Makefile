@@ -8,7 +8,7 @@ clean:
 	@rm -f *.o *.run
 
 run: driver.run
-	./driver.run
+	./driver.run brain_mri_raws/MRI
 
-#	./volimage <basefile> <operation> <indices> <output file>
-# e.g.	./volimage brain_mri_raws/MRI -x 66 output
+#	./driver <basefile> <operation> <indices> <output file>
+# e.g.	./driver brain_mri_raws/MRI -x 66 output

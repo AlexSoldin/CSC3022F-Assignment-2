@@ -6,7 +6,6 @@
 #include <cstdlib>
 #include <ios>
 
-#include "VolImage.cpp"
 #include "VolImage.h"
 
 using namespace std;
@@ -14,9 +13,7 @@ using namespace std;
 int main(int argc, char *argv[]){
     SLDALE003::VolImage volImage;
 
-    string imageBase;
-
-    imageBase = argv[1];
+    string imageBase = argv[1];
     volImage.readImages(imageBase);
 
     if(argc > 2){
