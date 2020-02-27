@@ -31,6 +31,9 @@ namespace SLDALE003{
 
             // number of bytes uses to store image data bytes and pointers (ignore vector<> container, dims etc)
             int volImageSize(void);
+
+            // method used to write to an output file
+            void writeOutputFile(unsigned char ** slice, std::string output_prefix);
     };
 }
 

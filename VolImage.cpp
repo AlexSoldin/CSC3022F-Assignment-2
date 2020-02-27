@@ -42,10 +42,12 @@ bool SLDALE003::VolImage::readImages(string baseName){
         unsigned char ** slice = new unsigned char * [height];
         string sliceName = baseName+to_string(sliceNumber)+".raw";
         ifstream rawInput(sliceName, ios::binary);
-        for (int i = 0; i < height; i++){
+        int rowCounter = 0;
+        while(rowCounter<height){
             unsigned char * row = new unsigned char[width];
             rawInput.read((char*)row, width);
-            slice[i] = row;
+            slice[rowCounter] = row;
+            rowCounter++;
         }
         slices.push_back(slice);
         rawInput.close();
@@ -61,13 +63,25 @@ bool SLDALE003::VolImage::readImages(string baseName){
     return true;
 }
 
-// void SLDALE003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_prefix){
-//     cout << "Successfully called diffmap";
-// }
+void SLDALE003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_prefix){
+    cout << "Difference Map between slice " << to_string(sliceI) << " and slice " << to_string(sliceJ) << "." << endl;
+    unsigned char ** slice1 = slices[sliceI];
+    unsigned char ** slice2 = slices[sliceJ];
+    unsigned char ** result = new unsigned char * [height];
 
-// void SLDALE003::VolImage::extract(int sliceId, string output_prefix){
-//     cout << "Successfully called extract";
-// }
+    for (int i = 0; i < height; i++){
+        result[i] = new unsigned char[width];
+        for (int j = 0; j < width; j++){
+            int value = ((float)slice1[i][j] - (float)slice2[i][j])/2;
+            result[i][j] = (unsigned char)(abs(value));
+        }
+    }
+
+}
+
+void SLDALE003::VolImage::extract(int sliceId, string output_prefix){
+    cout << "Successfully called extract";
+}
 
 int SLDALE003::VolImage::volImageSize(void){
     int numBytes = 0;
@@ -83,6 +97,10 @@ int SLDALE003::VolImage::volImageSize(void){
     return numBytes;
 }
 
+void SLDALE003::VolImage::writeOutputFile(unsigned char ** slice, std::string output_prefix){
+    
+}
+
 int main(int argc, char *argv[]){
     SLDALE003::VolImage volImage;
 
@@ -94,36 +112,22 @@ int main(int argc, char *argv[]){
         string diffArg = "-d";
         string extractArg = "-x";
 
+        /* Check for difference map instruction */
         if(currentArg.compare(diffArg)==0){
             string sliceI = argv[3];
             string sliceJ = argv[4];
             string outfile_preifx = argv[5];
             int sliceI_i = stoi(sliceI);
             int sliceJ_i = stoi(sliceJ);
-            //volImage.diffmap(sliceI_i, sliceJ_i, outfile_preifx);
-
-            if (argc > 6){
-                string slice = argv[7];
-                int slice_i = stoi(slice);
-                string outfile_prefix = argv[8];
-                //volImage.extract(slice_i, outfile_prefix);
-            }
+            volImage.diffmap(sliceI_i, sliceJ_i, outfile_preifx);
         }
 
+         /* Check for extract instruction */
         else if(currentArg.compare(extractArg)==0){
             string slice = argv[3];
             int slice_i = stoi(slice);
             string outfile_prefix = argv[4];
-            //volImage.extract(slice_i, outfile_prefix);
-
-            if (argc > 5){
-                string sliceI = argv[6];
-                string sliceJ = argv[7];
-                string outfile_preifx = argv[8];
-                int sliceI_i = stoi(sliceI);
-                int sliceJ_i = stoi(sliceJ);
-                //volImage.diffmap(sliceI_i, sliceJ_i, outfile_preifx);
-            }
+            volImage.extract(slice_i, outfile_prefix);
         }
     }
 
