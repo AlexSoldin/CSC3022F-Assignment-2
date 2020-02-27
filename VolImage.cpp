@@ -62,7 +62,7 @@ bool SLDALE003::VolImage::readImages(string baseName){
 //        std::bitset<8> x(slices[2][row][420]); //displays all data from a certain image number
 //        cout << x;
 //     }
-   
+
     int numBytes = volImageSize();
 
     cout << "\nNumber of images: " << to_string(numImages);
@@ -110,23 +110,27 @@ int SLDALE003::VolImage::volImageSize(void){
 
 /* This method writes the output header file and the output file */
 void SLDALE003::VolImage::writeOutputFile(unsigned char ** slice, std::string output_prefix){
+    string outputPath = "./Output/";
+    string headerFileName = output_prefix+".data";
+    string outputFileName = output_prefix+".raw";
     //write to header file
     ofstream headerFile;
-    headerFile.open("./Output/"+output_prefix+".data");
+    headerFile.open(outputPath+headerFileName);
     headerFile << width << " " << height << " " << 1;
     headerFile.close();
 
+    cout << "Output header filename: " << headerFileName << "\n";
+
     //write to output file
     ofstream outputFile;
-    outputFile.open("./Output/"+output_prefix+".raw", ios::binary);
+    outputFile.open(outputPath+outputFileName);
     for (int i = 0; i < height; i++){
         char* outputArray = (char*)slices[i];
         outputFile.write(outputArray,width);
     }
     outputFile.close();
 
-    cout << "\nOutput header filename: " << output_prefix << ".data";
-    cout << "\nOutput filename: " << output_prefix << ".raw\n\n";
+    cout << "Output filename: " << outputFileName << "\n\n";
 }
 
 int main(int argc, char *argv[]){
