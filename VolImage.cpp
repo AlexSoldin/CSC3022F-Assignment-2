@@ -73,7 +73,7 @@ bool SLDALE003::VolImage::readImages(string baseName){
 }
 
 void SLDALE003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_prefix){
-    cout << "Difference Map between slice " << to_string(sliceI) << " and slice " << to_string(sliceJ) << "." << endl;
+    cout << "Difference Map between slice " << to_string(sliceI) << " and slice " << to_string(sliceJ) << "\n" << endl;
     unsigned char ** slice1 = slices[sliceI];
     unsigned char ** slice2 = slices[sliceJ];
     unsigned char ** result = new unsigned char * [height];
@@ -85,10 +85,13 @@ void SLDALE003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_pre
             result[i][j] = (unsigned char)(abs(value));
         }
     }
+    writeOutputFile(result, output_prefix);
 }
 
 void SLDALE003::VolImage::extract(int sliceId, string output_prefix){
-    cout << "Successfully called extract";
+   cout << "Extraction of slice " << to_string(sliceId) << "\n" << endl;
+   unsigned char ** result = slices[sliceId];
+   writeOutputFile(result, output_prefix);
 }
 
 int SLDALE003::VolImage::volImageSize(void){
@@ -115,13 +118,15 @@ void SLDALE003::VolImage::writeOutputFile(unsigned char ** slice, std::string ou
 
     //write to output file
     ofstream outputFile;
-    outputFile.open("./Output/"+output_prefix+".raw");
+    outputFile.open("./Output/"+output_prefix+".raw", ios::binary);
     for (int i = 0; i < height; i++){
-        for (int j = 0; j < width; j++){
-            outputFile << slices[i][j];
-        }
+        char* outputArray = (char*)slices[i];
+        outputFile.write(outputArray,width);
     }
     outputFile.close();
+
+    cout << "\nOutput header filename: " << output_prefix << ".data";
+    cout << "\nOutput filename: " << output_prefix << ".raw\n\n";
 }
 
 int main(int argc, char *argv[]){
@@ -138,20 +143,20 @@ int main(int argc, char *argv[]){
 
         /* Check for difference map instruction */
         if(currentArg.compare(diffArg)==0){
-            string sliceI = argv[3];
-            string sliceJ = argv[4];
+            string stringSliceI = argv[3];
+            string stringSliceJ = argv[4];
             string outfile_preifx = argv[5];
-            int sliceI_i = stoi(sliceI);
-            int sliceJ_i = stoi(sliceJ);
-            volImage.diffmap(sliceI_i, sliceJ_i, outfile_preifx);
+            int sliceI = stoi(stringSliceI);
+            int sliceJ = stoi(stringSliceJ);
+            volImage.diffmap(sliceI, sliceJ, outfile_preifx);
         }
 
          /* Check for extract instruction */
         else if(currentArg.compare(extractArg)==0){
-            string slice = argv[3];
-            int slice_i = stoi(slice);
+            string stringSlice = argv[3];
+            int slice = stoi(stringSlice);
             string outfile_prefix = argv[4];
-            volImage.extract(slice_i, outfile_prefix);
+            volImage.extract(slice, outfile_prefix);
         }
 
         else if(currentArg.compare(rowExtractArg)==0){
