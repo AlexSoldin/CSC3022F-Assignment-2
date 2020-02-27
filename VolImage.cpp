@@ -16,12 +16,12 @@ SLDALE003::VolImage::VolImage(){
 }
 
 SLDALE003::VolImage::~VolImage(){
-    // for(int slice = 0; slice < slices.size(); slice++){
-    //     for(int i = 0; i < height; i ++){
-    //         delete [] slices[slice][i];
-    //     }
-    //     delete [] slices[slice];
-    // }
+    for(int slice = 0; slice < slices.size(); slice++){
+        for(int i = 0; i < height; i ++){
+            delete [] slices[slice][i];
+        }
+        delete [] slices[slice];
+    }
 }
 
 bool SLDALE003::VolImage::readImages(string baseName){
@@ -36,9 +36,27 @@ bool SLDALE003::VolImage::readImages(string baseName){
     width = headerValues[0];
     height = headerValues[1];
     int numImages = headerValues[2];
-    cout << "Width: " << to_string(width) << "\nHeight: " << to_string(height) << "\nNumImages: " << to_string(numImages) << endl;
+    // cout << "Width: " << to_string(width) << "\nHeight: " << to_string(height) << "\nNumImages: " << to_string(numImages) << endl;
 
-    
+    for(int sliceNumber=0; sliceNumber<numImages; sliceNumber++){
+        unsigned char ** slice = new unsigned char * [height];
+        string sliceName = baseName+to_string(sliceNumber)+".raw";
+        ifstream rawInput(sliceName, ios::binary);
+        for (int i = 0; i < height; i++){
+            unsigned char * row = new unsigned char[width];
+            rawInput.read((char*)row, width);
+            slice[i] = row;
+        }
+        slices.push_back(slice);
+        rawInput.close();
+    }
+
+    int numBytes = volImageSize();
+
+    cout << "\n";
+    cout << "Number of images: " << to_string(numImages) << endl;
+    cout << "Number of bytes required: " << to_string(numBytes) << endl;
+    cout << "\n";
 
     return true;
 }
@@ -52,7 +70,17 @@ bool SLDALE003::VolImage::readImages(string baseName){
 // }
 
 int SLDALE003::VolImage::volImageSize(void){
-    return 0;
+    int numBytes = 0;
+
+    for (int i = 0; i < slices.size(); i++){
+        numBytes += sizeof(slices[i]); //size of pointer to 2D array
+
+        for (int j = 0; j < height; j++){
+            numBytes += sizeof(slices[i][j]); //size of the pointer to the row
+            numBytes += width; //each row has width * many unsigned chars of size 1 byte
+        }
+    }
+    return numBytes;
 }
 
 int main(int argc, char *argv[]){
