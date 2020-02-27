@@ -1,14 +1,14 @@
-driver.run: driver.o
-	g++ -o driver.run driver.cpp --std=c++11
+volimage: volimage.o
+	g++ -o volimage VolImage.cpp --std=c++11
 
-driver.o: driver.cpp
-	g++ -o driver.o driver.cpp --std=c++11
+volimage.o: VolImage.cpp
+	g++ -o volimage.o VolImage.cpp --std=c++11
 
 clean: 
 	@rm -f *.o *.run
 
-run: driver.run
-	./driver.run brain_mri_raws/MRI
+run: volimage
+	./volimage brain_mri_raws/MRI
 
-#	./driver <basefile> <operation> <indices> <output file>
-# e.g.	./driver brain_mri_raws/MRI -x 66 output
+#	./volimage <basefile> <operation> <indices> <output file>
+# e.g.	./volimage brain_mri_raws/MRI -x 66 output
