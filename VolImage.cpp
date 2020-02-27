@@ -16,11 +16,11 @@ SLDALE003::VolImage::VolImage(){
 }
 
 SLDALE003::VolImage::~VolImage(){
-    for(int slice = 0; slice < slices.size(); slice++){
-        for(int i = 0; i < height; i ++){
-            delete [] slices[slice][i];
+    for(int i = 0; i < slices.size(); i++){
+        for(int j = 0; j < height; j ++){
+            delete [] slices[i][j];
         }
-        delete [] slices[slice];
+        delete [] slices[i];
     }
 }
 
@@ -29,19 +29,20 @@ bool SLDALE003::VolImage::readImages(string baseName){
     vector<int> headerValues;
     int instance = 0;
     while(!file.eof()){
-        file >> instance >> ws;
+        file >> instance >> ws; //ignores whitespace and adds each value to int vector
         headerValues.push_back(instance);
     }
 
     width = headerValues[0];
     height = headerValues[1];
     int numImages = headerValues[2];
-    // cout << "Width: " << to_string(width) << "\nHeight: " << to_string(height) << "\nNumImages: " << to_string(numImages) << endl;
+    cout << "Width: " << to_string(width) << "\nHeight: " << to_string(height) << "\nNumImages: " << to_string(numImages) << endl;
 
     for(int sliceNumber=0; sliceNumber<numImages; sliceNumber++){
         unsigned char ** slice = new unsigned char * [height];
         string sliceName = baseName+to_string(sliceNumber)+".raw";
         ifstream rawInput(sliceName, ios::binary);
+
         int rowCounter = 0;
         while(rowCounter<height){
             unsigned char * row = new unsigned char[width];
@@ -53,12 +54,20 @@ bool SLDALE003::VolImage::readImages(string baseName){
         rawInput.close();
     }
 
+    /*  I used this to view the data to better my understanding 
+        slices[imageNumber][Row][Column]
+        e.g. slices[0][0][429] 
+    */
+//    for (int row = 0; row < height; row++){
+//        std::bitset<8> x(slices[2][row][420]); //displays all data from a certain image number
+//        cout << x;
+//     }
+   
     int numBytes = volImageSize();
 
-    cout << "\n";
-    cout << "Number of images: " << to_string(numImages) << endl;
-    cout << "Number of bytes required: " << to_string(numBytes) << endl;
-    cout << "\n";
+    cout << "\nNumber of images: " << to_string(numImages);
+    cout << "\nNumber of bytes required: " << to_string(numBytes);
+    cout << "\n\n";
 
     return true;
 }
@@ -76,7 +85,6 @@ void SLDALE003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_pre
             result[i][j] = (unsigned char)(abs(value));
         }
     }
-
 }
 
 void SLDALE003::VolImage::extract(int sliceId, string output_prefix){
@@ -97,8 +105,23 @@ int SLDALE003::VolImage::volImageSize(void){
     return numBytes;
 }
 
+/* This method writes the output header file and the output file */
 void SLDALE003::VolImage::writeOutputFile(unsigned char ** slice, std::string output_prefix){
-    
+    //write to header file
+    ofstream headerFile;
+    headerFile.open("./Output/"+output_prefix+".data");
+    headerFile << width << " " << height << " " << 1;
+    headerFile.close();
+
+    //write to output file
+    ofstream outputFile;
+    outputFile.open("./Output/"+output_prefix+".raw");
+    for (int i = 0; i < height; i++){
+        for (int j = 0; j < width; j++){
+            outputFile << slices[i][j];
+        }
+    }
+    outputFile.close();
 }
 
 int main(int argc, char *argv[]){
@@ -111,6 +134,7 @@ int main(int argc, char *argv[]){
         string currentArg = argv[2];
         string diffArg = "-d";
         string extractArg = "-x";
+        string rowExtractArg = "-g";
 
         /* Check for difference map instruction */
         if(currentArg.compare(diffArg)==0){
@@ -128,6 +152,10 @@ int main(int argc, char *argv[]){
             int slice_i = stoi(slice);
             string outfile_prefix = argv[4];
             volImage.extract(slice_i, outfile_prefix);
+        }
+
+        else if(currentArg.compare(rowExtractArg)==0){
+            cout << "Extra Credit" << endl;
         }
     }
 

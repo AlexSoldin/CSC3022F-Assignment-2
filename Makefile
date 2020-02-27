@@ -9,6 +9,5 @@ clean:
 
 run: volimage
 	./volimage brain_mri_raws/MRI
-
 #	./volimage <basefile> <operation> <indices> <output file>
 # e.g.	./volimage brain_mri_raws/MRI -x 66 output
