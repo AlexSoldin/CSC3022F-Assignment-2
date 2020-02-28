@@ -1,5 +1,5 @@
 volimage.run: volimage.o
-	g++ -o volimage VolImage.cpp --std=c++11
+	g++ -o volimage.run VolImage.cpp --std=c++11
 
 volimage.o: VolImage.cpp
 	g++ -o volimage.o VolImage.cpp --std=c++11
