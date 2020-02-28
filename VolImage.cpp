@@ -126,9 +126,7 @@ void SLDALE003::VolImage::writeOutputFile(unsigned char ** outputSlice, std::str
     //write to output file
     ofstream outputFile;
     outputFile.open((outputPath+outputFileName), ios::binary);
-    if(!outputFile.is_open()){
-        throw 10;
-    }
+    
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
             outputFile << outputSlice[i][j];
