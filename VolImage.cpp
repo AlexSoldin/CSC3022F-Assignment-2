@@ -25,13 +25,14 @@ SLDALE003::VolImage::~VolImage(){
 }
 
 bool SLDALE003::VolImage::readImages(string baseName){
-    ifstream file("./" + baseName + ".data");
+    ifstream headerFileIn("./" + baseName + ".data");
     vector<int> headerValues;
     int instance = 0;
-    while(!file.eof()){
-        file >> instance >> ws; //ignores whitespace and adds each value to int vector
+    while(!headerFileIn.eof()){
+        headerFileIn >> instance >> ws; //ignores whitespace and adds each value to int vector
         headerValues.push_back(instance);
     }
+    headerFileIn.close();
 
     width = headerValues[0];
     height = headerValues[1];
@@ -109,10 +110,11 @@ int SLDALE003::VolImage::volImageSize(void){
 }
 
 /* This method writes the output header file and the output file */
-void SLDALE003::VolImage::writeOutputFile(unsigned char ** slice, std::string output_prefix){
+void SLDALE003::VolImage::writeOutputFile(unsigned char ** outputSlice, std::string output_prefix){
     string outputPath = "./Output/";
     string headerFileName = output_prefix+".data";
     string outputFileName = output_prefix+".raw";
+
     //write to header file
     ofstream headerFile;
     headerFile.open(outputPath+headerFileName);
@@ -123,10 +125,14 @@ void SLDALE003::VolImage::writeOutputFile(unsigned char ** slice, std::string ou
 
     //write to output file
     ofstream outputFile;
-    outputFile.open(outputPath+outputFileName);
+    outputFile.open((outputPath+outputFileName), ios::binary);
+    if(!outputFile.is_open()){
+        throw 10;
+    }
     for (int i = 0; i < height; i++){
-        char* outputArray = (char*)slices[i];
-        outputFile.write(outputArray,width);
+        for (int j = 0; j < width; j++){
+            outputFile << outputSlice[i][j];
+        }
     }
     outputFile.close();
 
