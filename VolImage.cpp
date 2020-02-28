@@ -86,25 +86,25 @@ void SLDALE003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_pre
             result[i][j] = (unsigned char)(abs(value));
         }
     }
-    writeOutputFile(result, output_prefix);
+    writeOutputFile(result, output_prefix, height);
 }
 
 void SLDALE003::VolImage::extract(int sliceId, string output_prefix){
    cout << "Extraction of slice " << to_string(sliceId) << "\n" << endl;
    unsigned char ** result = slices[sliceId];
-   writeOutputFile(result, output_prefix);
+   writeOutputFile(result, output_prefix, height);
 }
 
 void SLDALE003::VolImage::extractRow(int rowId, std::string output_prefix){
     cout << "Extraction of row " << to_string(rowId) << " from all slices\n" << endl;
     unsigned char ** result = new unsigned char * [slices.size()];
     for (int i = 0; i < slices.size(); i++){
-        result[i] = new unsigned char * [width];
+        result[i] = new unsigned char[width];
         for (int j = 0; j < width; j++){
-            result = slices[i][rowId][j];
+            result[i][j] = slices[i][rowId][j];
         }
     }
-    writeOutputFile(result, output_prefix);
+    writeOutputFile(result, output_prefix, slices.size());
 }
 
 int SLDALE003::VolImage::volImageSize(void){
@@ -122,7 +122,7 @@ int SLDALE003::VolImage::volImageSize(void){
 }
 
 /* This method writes the output header file and the output file */
-void SLDALE003::VolImage::writeOutputFile(unsigned char ** outputSlice, std::string output_prefix){
+void SLDALE003::VolImage::writeOutputFile(unsigned char ** outputSlice, std::string output_prefix, int lengthOutputFile){
     string outputPath = "./Output/";
     string headerFileName = output_prefix+".data";
     string outputFileName = output_prefix+".raw";
@@ -138,7 +138,7 @@ void SLDALE003::VolImage::writeOutputFile(unsigned char ** outputSlice, std::str
     //write to output file
     ofstream outputFile;
     outputFile.open((outputPath+outputFileName), ios::binary);
-    for (int i = 0; i < height; i++){
+    for (int i = 0; i < lengthOutputFile; i++){
         for (int j = 0; j < width; j++){
             outputFile << outputSlice[i][j];
         }

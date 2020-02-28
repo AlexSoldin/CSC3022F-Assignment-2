@@ -36,7 +36,8 @@ namespace SLDALE003{
             int volImageSize(void);
 
             // method used to write to an output file
-            void writeOutputFile(unsigned char ** slice, std::string output_prefix);
+            // length integer indicates whether the output file is being written to a length of height or slices.size()
+            void writeOutputFile(unsigned char ** slice, std::string output_prefix, int lengthOutputFile);
     };
 }
 
