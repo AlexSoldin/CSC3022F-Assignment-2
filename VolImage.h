@@ -29,6 +29,9 @@ namespace SLDALE003{
             // extract slice sliceId and write to output
             void extract(int sliceId, std::string output_prefix);
 
+            // extract row rowId from all slices and write to output
+            void extractRow(int rowId, std::string output_prefix);
+
             // number of bytes uses to store image data bytes and pointers (ignore vector<> container, dims etc)
             int volImageSize(void);
 

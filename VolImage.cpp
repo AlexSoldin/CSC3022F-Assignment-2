@@ -95,6 +95,18 @@ void SLDALE003::VolImage::extract(int sliceId, string output_prefix){
    writeOutputFile(result, output_prefix);
 }
 
+void SLDALE003::VolImage::extractRow(int rowId, std::string output_prefix){
+    cout << "Extraction of row " << to_string(rowId) << " from all slices\n" << endl;
+    unsigned char ** result = new unsigned char * [slices.size()];
+    for (int i = 0; i < slices.size(); i++){
+        result[i] = new unsigned char * [width];
+        for (int j = 0; j < width; j++){
+            result = slices[i][rowId][j];
+        }
+    }
+    writeOutputFile(result, output_prefix);
+}
+
 int SLDALE003::VolImage::volImageSize(void){
     int numBytes = 0;
 
@@ -126,7 +138,6 @@ void SLDALE003::VolImage::writeOutputFile(unsigned char ** outputSlice, std::str
     //write to output file
     ofstream outputFile;
     outputFile.open((outputPath+outputFileName), ios::binary);
-    
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
             outputFile << outputSlice[i][j];
@@ -167,8 +178,12 @@ int main(int argc, char *argv[]){
             volImage.extract(slice, outfile_prefix);
         }
 
+        /* Check for row extraction instruction */
         else if(currentArg.compare(rowExtractArg)==0){
-            cout << "Extra Credit" << endl;
+            string stringSlice = argv[3];
+            int slice = stoi(stringSlice);
+            string outfile_prefix = argv[4];
+            volImage.extractRow(slice, outfile_prefix);
         }
     }
 

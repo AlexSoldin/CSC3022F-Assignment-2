@@ -1,4 +1,4 @@
-volimage: volimage.o
+volimage.run: volimage.o
 	g++ -o volimage VolImage.cpp --std=c++11
 
 volimage.o: VolImage.cpp
@@ -8,6 +8,7 @@ clean:
 	@rm -f *.o *.run
 
 #	./volimage <basefile> <operation> <indices> <output file>
-run: volimage
+run: volimage.run
 #	./volimage brain_mri_raws/MRI -d 66 67 output
-	./volimage brain_mri_raws/MRI -x 66 output
+#	./volimage brain_mri_raws/MRI -x 66 output
+	./volimage brain_mri_raws/MRI -g 6 output
