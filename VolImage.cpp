@@ -37,7 +37,7 @@ bool SLDALE003::VolImage::readImages(string baseName){
     width = headerValues[0];
     height = headerValues[1];
     int numImages = headerValues[2];
-    cout << "Width: " << to_string(width) << "\nHeight: " << to_string(height) << "\nNumImages: " << to_string(numImages) << endl;
+    // cout << "Width: " << to_string(width) << "\nHeight: " << to_string(height) << "\nNumImages: " << to_string(numImages) << endl;
 
     for(int sliceNumber=0; sliceNumber<numImages; sliceNumber++){
         unsigned char ** slice = new unsigned char * [height];
